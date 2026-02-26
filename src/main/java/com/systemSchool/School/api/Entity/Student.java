@@ -22,9 +22,8 @@ public class Student {
     private String StudentName;
     @Column(name="StudentGender", nullable=false)
     private String StudentGender;
-    @Column(name="DOB", nullable=false)
-    @Temporal(TemporalType.DATE)
-    private Date StudentDOB;
-    @Column(name="Class",nullable = false)
+    @Column(name="StudentDOB", nullable=false)
+    private String StudentDOB;
+    @Column(name="ClassName",nullable = false)
     private String ClassName;
 }

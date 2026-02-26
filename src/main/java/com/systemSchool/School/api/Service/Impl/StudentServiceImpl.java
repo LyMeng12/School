@@ -28,24 +28,29 @@ public  class StudentServiceImpl implements StudentServer{
         Student stu = new Student();
         stu.setStudentName(studentDTO.getStudentName());
         stu.setStudentGender(studentDTO.getStudentGender());
-        stu.setStudentDOB((Date) studentDTO.getStudentDOB());
+        stu.setStudentDOB(studentDTO.getStudentDOB());
         stu.setClassName(studentDTO.getClassName());
         studentRepository.save(stu);
     }
 
     @Override
     public StudentDTO UpdateStudent(Long StudentId, StudentDTO studentDTO) {
-        StudentDTO studentDTO1 = new StudentDTO();
         Optional<Student> stu = studentRepository.findById(StudentId);
         if(stu.isEmpty()){
             log.info("Student not found", StudentId);
-            return studentDTO1;
+            return null;
         }
+        Student student = stu.get();
+        student.setStudentName(studentDTO.getStudentName());
+        student.setStudentGender(studentDTO.getStudentGender());
+        student.setStudentDOB(studentDTO.getStudentDOB());
+        student.setClassName(studentDTO.getClassName());
+        studentRepository.save(student);
+        StudentDTO studentDTO1 = new StudentDTO();
         studentDTO1.setStudentName(stu.get().getStudentName());
         studentDTO1.setStudentGender(stu.get().getStudentGender());
-        studentDTO1.setStudentDOB((Data) stu.get().getStudentDOB());
+        studentDTO1.setStudentDOB(stu.get().getStudentDOB());
         studentDTO1.setClassName(stu.get().getClassName());
-
         return studentDTO1;
     }
 
@@ -60,15 +65,15 @@ public  class StudentServiceImpl implements StudentServer{
         StudentDTO studentDTO = new StudentDTO();
         Optional<Student> stu = studentRepository.findById(StudentId);
         if(stu.isEmpty()){
-            log.info("Student not found", StudentId);
-            return studentDTO;
+            log.info("Student {} not  found", StudentId);
+            return null;
         }
         studentDTO.setStudenId(stu.get().getStudentId());
         studentDTO.setStudentName(stu.get().getStudentName());
         studentDTO.setStudentGender(stu.get().getStudentGender());
-        studentDTO.setStudentDOB((Data) stu.get().getStudentDOB());
+        studentDTO.setStudentDOB(stu.get().getStudentDOB());
         studentDTO.setClassName(stu.get().getClassName());
-        return null;
+        return studentDTO;
     }
 
     @Override
@@ -77,13 +82,14 @@ public  class StudentServiceImpl implements StudentServer{
         List<Student> students = studentRepository.findAll();
         if (students.isEmpty()) {
             log.info("No students found");
-            return studentDTOList;
+            return null;
         }
         for (Student student : students) {
             StudentDTO studentDTO = new StudentDTO();
+            studentDTO.setStudenId(student.getStudentId());
             studentDTO.setStudentName(student.getStudentName());
             studentDTO.setStudentGender(student.getStudentGender());
-            studentDTO.setStudentDOB((Data) student.getStudentDOB());
+            studentDTO.setStudentDOB(student.getStudentDOB());
             studentDTO.setClassName(student.getClassName());
             studentDTOList.add(studentDTO);
         }

@@ -12,17 +12,13 @@ import lombok.ToString;
 public class StudentDTO {
     @JsonProperty("StudenId")
     private Long studenId;
-
     @JsonProperty("StudentName")
     private String studentName;
-
     @JsonProperty("StudentGender")
     private String studentGender;
-
-    @JsonProperty("Class")
+    @JsonProperty("StudentDOB")
+    private String studentDOB;
+    @JsonProperty("ClassName")
     private String className;
-
-    @JsonProperty("DOB")
-    private Data StudentDOB;
 
 }
