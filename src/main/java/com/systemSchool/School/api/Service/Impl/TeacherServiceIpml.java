@@ -7,6 +7,7 @@ import com.systemSchool.School.api.dto.TeacherDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,11 +62,39 @@ public class TeacherServiceIpml implements TeacherService {
 
     @Override
     public TeacherDTO getTeacherById(Long id) {
-        return null;
+        Optional<Teacher> teachers = teacherRepository.findById(id);
+        if (teachers.isEmpty()) {
+            log.info("Teacher with id " + id + " not found");
+            return null;
+        }
+        TeacherDTO teacherDTO = new TeacherDTO();
+        teacherDTO.setTeacherId(teachers.get().getId());
+        teacherDTO.setTeacherName(teachers.get().getTeacherName());
+        teacherDTO.setAge(teachers.get().getAge());
+        teacherDTO.setGender(teachers.get().getGender());
+        teacherDTO.setPhoneNumber(teachers.get().getPhoneNumber());
+        teacherDTO.setSalary(teachers.get().getSalary());
+        return teacherDTO;
+
     }
 
     @Override
     public List<TeacherDTO> getAllTeachers() {
-        return List.of();
+        ArrayList<TeacherDTO> teacherDTOArrayList = new ArrayList<>();
+        List<Teacher> teachers = teacherRepository.findAll();
+        if(teachers.isEmpty()) {
+            log.info("No teachers found");
+        }
+        for (Teacher teacher : teachers) {
+            TeacherDTO teacherDTO = new TeacherDTO();
+            teacherDTO.setTeacherId(teacher.getId());
+            teacherDTO.setTeacherName(teacher.getTeacherName());
+            teacherDTO.setAge(teacher.getAge());
+            teacherDTO.setGender(teacher.getGender());
+            teacherDTO.setPhoneNumber(teacher.getPhoneNumber());
+            teacherDTO.setSalary(teacher.getSalary());
+            teacherDTOArrayList.add(teacherDTO);
+        }
+        return teacherDTOArrayList;
     }
 }

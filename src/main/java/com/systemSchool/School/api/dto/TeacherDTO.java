@@ -9,6 +9,9 @@ import lombok.ToString;
 @Setter
 @ToString
 public class TeacherDTO {
+
+    @JsonProperty("teacherID")
+    private Long teacherId;
     @JsonProperty("teacherName")
     private String teacherName;
     @JsonProperty("age")
