@@ -14,7 +14,7 @@ public class Teacher {
     private String teacherName;
     @Column (name="age",nullable=false)
     private Long age;
-    @Column (name = "gender", nullable=false)
+    @Column (name = "gender", nullable=false        )
     private String gender;
     @Column (name = "phoneNumber", nullable=false)
     private String phoneNumber;

@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface TeacherService {
     void createTeacher(TeacherDTO teacherDTO);
-    void updateTeacher(TeacherDTO teacherDTO,Long id);
-    void deleteTeacher(Long id);
-    TeacherDTO getTeacherById(Long id);
+    TeacherDTO updateTeacher(TeacherDTO teacherDTO, Long TeacherId);
+    void deleteTeacher(Long TeacherId);
+    TeacherDTO getTeacherById(Long TeacherId);
     List<TeacherDTO> getAllTeachers();
 
 

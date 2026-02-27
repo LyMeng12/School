@@ -12,6 +12,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequestMapping("/student")
 public class Controller {
     @Autowired
     private StudentServer studentServer;
