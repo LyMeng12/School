@@ -1,6 +1,7 @@
 package com.systemSchool.School.api.Service.Impl;
 
 import com.systemSchool.School.api.DTO.ClassDTO;
+import com.systemSchool.School.api.Entitty.ClassAPI;
 import com.systemSchool.School.api.Repository.ClassAPIRepository;
 import com.systemSchool.School.api.Service.ClassService;
 import com.systemSchool.School.api.Service.StudentService;
@@ -18,7 +19,10 @@ public class ClassServiceIpml implements ClassService {
 
     @Override
     public void create(ClassDTO classDTO) {
-
+        ClassAPI classAPI = new ClassAPI();
+        classAPI.setClassName(classDTO.getClassName());
+        classAPI.setRoomNumber(classDTO.getRoomNumber());
+        classAPIRepository.save(classAPI);
     }
 
     @Override

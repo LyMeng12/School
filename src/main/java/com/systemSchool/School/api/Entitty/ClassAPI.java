@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -13,7 +12,7 @@ import java.util.List;
 @ToString
 @Entity
 @Table(name = "Class")
-public class classAPI {
+public class ClassAPI {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,12 +25,12 @@ public class classAPI {
 
     @ManyToMany
     @JoinTable(name = "teacher_class", // join table
-            joinColumns = @JoinColumn(name = "teacher_id"), // FK to Student
-            inverseJoinColumns = @JoinColumn(name = "class_id"))
-    private List<teacher> teachers;
+            joinColumns = @JoinColumn(name = "class_id"), // FK to Student
+            inverseJoinColumns = @JoinColumn(name = "teacher_id"))
+    private List<Teacher> teachers;
 
-    @OneToMany(mappedBy = "students", cascade = CascadeType.ALL)
-    private List<student>students;
+    @OneToMany(mappedBy = "classAPI", cascade = CascadeType.ALL)
+    private List<Student> students;
 
 
 

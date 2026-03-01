@@ -12,7 +12,7 @@ import java.util.List;
 @ToString
 @Entity
 @Table(name="Subject")
-public class subject {
+public class Subject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,9 +23,9 @@ public class subject {
 
     @ManyToOne
     @JoinColumn(name = "teacherId")
-    private teacher teacher;
+    private Teacher teacher;
 
-    @ManyToMany(mappedBy = "student")
-    private List<student> students;
+    @ManyToMany(mappedBy = "subjects")
+    private List<Student> students;
 
 }

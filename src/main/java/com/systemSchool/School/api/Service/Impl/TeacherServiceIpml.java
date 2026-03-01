@@ -1,6 +1,7 @@
 package com.systemSchool.School.api.Service.Impl;
 
 import com.systemSchool.School.api.DTO.TeacherDTO;
+import com.systemSchool.School.api.Entitty.Teacher;
 import com.systemSchool.School.api.Repository.TeacherRepository;
 import com.systemSchool.School.api.Service.StudentService;
 import com.systemSchool.School.api.Service.TeacherService;
@@ -19,7 +20,10 @@ public class TeacherServiceIpml implements TeacherService {
 
     @Override
     public void create(TeacherDTO teacherDTO) {
-
+        Teacher teacher = new Teacher();
+        teacher.setName(teacherDTO.getName());
+        teacher.setSalary(teacherDTO.getSalary());
+        teacherRepository.save(teacher);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.systemSchool.School.api.Service.Impl;
 
 import com.systemSchool.School.api.DTO.StudentDTO;
+import com.systemSchool.School.api.Entitty.Student;
 import com.systemSchool.School.api.Repository.StudentRepository;
 import com.systemSchool.School.api.Service.StudentService;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,12 @@ public class StudentServiceIpml implements StudentService {
 
     @Override
     public void create(StudentDTO studentDTO) {
-
+        Student student = new Student();
+        student.setName(studentDTO.getName());
+        student.setGender(studentDTO.getGender());
+        student.setDob(studentDTO.getDob());
+        student.setEmail(studentDTO.getEmail());
+        studentRepository.save(student);
     }
 
     @Override

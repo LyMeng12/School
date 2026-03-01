@@ -12,7 +12,7 @@ import java.util.List;
 @ToString
 @Entity
 @Table(name="Teacher")
-public class teacher {
+public class Teacher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,10 +21,10 @@ public class teacher {
     private String name;
 
     @OneToMany(mappedBy = "teacher",cascade = CascadeType.ALL)
-    private List<subject> subjects;
+    private List<Subject> subjects;
 
-    @ManyToMany(mappedBy = "class")
-    private List<classAPI> classapis;
+    @ManyToMany(mappedBy = "teachers")
+    private List<ClassAPI> classAPI;
 
 
     @Column(unique=true,nullable = false)

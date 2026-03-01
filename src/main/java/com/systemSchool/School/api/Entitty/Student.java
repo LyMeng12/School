@@ -12,7 +12,7 @@ import java.util.List;
 @ToString
 @Entity
 @Table(name="Student")
-public class student {
+public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,17 +31,18 @@ public class student {
     private String email;
 
     @ManyToOne
-    @JoinColumn(name = "ClassId")
-    private classAPI classapi;
+    @JoinColumn(name = "class_id") // lowercase, consistent
+    private ClassAPI classAPI;
 
     @ManyToMany
     @JoinTable(
-            name = "student_subject", // join table
-            joinColumns = @JoinColumn(name = "student_id"), // FK to Student
-            inverseJoinColumns = @JoinColumn(name = "subject_id")
+            name = "students_subject", // join table
+            joinColumns = @JoinColumn(name = "students_id"), // FK to Student
+            inverseJoinColumns = @JoinColumn(name = "subjects_id")
     )
-    private List<subject> subjects;
+    private List<Subject> subjects;
 
 
 
 }
+

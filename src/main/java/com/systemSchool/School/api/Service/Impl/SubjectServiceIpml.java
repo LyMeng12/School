@@ -1,6 +1,7 @@
 package com.systemSchool.School.api.Service.Impl;
 
 import com.systemSchool.School.api.DTO.SubjectDTO;
+import com.systemSchool.School.api.Entitty.Subject;
 import com.systemSchool.School.api.Repository.SubjectRepository;
 import com.systemSchool.School.api.Service.StudentService;
 import com.systemSchool.School.api.Service.SubjectService;
@@ -19,7 +20,9 @@ public class SubjectServiceIpml implements SubjectService {
 
     @Override
     public void create(SubjectDTO subjectDTO) {
-
+        Subject subject = new Subject();
+        subject.setSubjectName(subjectDTO.getSubjectName());
+        subjectRepository.save(subject);
     }
 
     @Override
