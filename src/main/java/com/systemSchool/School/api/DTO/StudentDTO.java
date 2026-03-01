@@ -14,7 +14,7 @@ public class StudentDTO {
 
     @JsonProperty("StudentId")
     private Long id;
-    @JsonProperty("StudnetName")
+    @JsonProperty("StudentName")
     private String name;
     @JsonProperty("StudentGender")
     private String gender;
