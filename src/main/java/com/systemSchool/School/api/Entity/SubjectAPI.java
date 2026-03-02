@@ -1,4 +1,4 @@
-package com.systemSchool.School.api.Entitty;
+package com.systemSchool.School.api.Entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -18,5 +18,5 @@ public class SubjectAPI {
     private String subjectName;
 
     @OneToMany
-    private List<SubjectAPI> subjects;
+    private List<TeacherAPI> teacherAPI;
 }

@@ -1,4 +1,4 @@
-package com.systemSchool.School.api.Entitty;
+package com.systemSchool.School.api.Entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -14,8 +14,11 @@ import java.util.List;
 @Table(name="Class")
 public class ClassAPI {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long classId;
+    @Column(unique=true, nullable=false)
     private String className;
+    @Column(unique=true, nullable=false)
     private String classNumber;
 
     @OneToMany
