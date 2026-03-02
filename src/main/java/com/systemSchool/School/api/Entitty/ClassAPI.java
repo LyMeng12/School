@@ -11,27 +11,17 @@ import java.util.List;
 @Setter
 @ToString
 @Entity
-@Table(name = "Class")
+@Table(name="Class")
 public class ClassAPI {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(unique = true, nullable = false)
+    private Long classId;
     private String className;
+    private String classNumber;
 
-    @Column(unique = true, nullable = false)
-    private String roomNumber;
+    @OneToMany
+    private List<StudentAPI> students;
 
     @ManyToMany
-    @JoinTable(name = "teacher_class", // join table
-            joinColumns = @JoinColumn(name = "class_id"), // FK to Student
-            inverseJoinColumns = @JoinColumn(name = "teacher_id"))
-    private List<Teacher> teachers;
-
-    @OneToMany(mappedBy = "classAPI", cascade = CascadeType.ALL)
-    private List<Student> students;
-
-
-
+    @JoinTable(name = "class_teacher",joinColumns = @JoinColumn(name = "class_id"),inverseJoinColumns = @JoinColumn(name = "teacher_id"))
+    private List<TeacherAPI> teachers;
 }
