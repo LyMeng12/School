@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter
 @Setter
 @ToString
@@ -14,7 +16,7 @@ public class StudentDTO {
     private Long studentId;
     @JsonProperty("student_name")
     private String studentName;
-    @JsonProperty("Gender")
+    @JsonProperty("gender")
     private String gender;
     @JsonProperty("dob")
     private String dob;

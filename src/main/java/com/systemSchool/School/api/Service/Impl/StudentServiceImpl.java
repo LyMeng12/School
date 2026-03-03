@@ -4,6 +4,7 @@ import com.systemSchool.School.api.DTO.ClassDTO;
 import com.systemSchool.School.api.DTO.StudentDTO;
 import com.systemSchool.School.api.Entity.ClassAPI;
 import com.systemSchool.School.api.Entity.StudentAPI;
+import com.systemSchool.School.api.Repository.ClassRepository;
 import com.systemSchool.School.api.Repository.StudentRepository;
 import com.systemSchool.School.api.Service.StudentService;
 import lombok.extern.slf4j.Slf4j;
@@ -14,12 +15,30 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-public class StudentServiceImpl implements StudentService {
+public  class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
+    private final ClassRepository classRepository;
 
-    public StudentServiceImpl(StudentRepository studentRepository) {
+    public StudentServiceImpl(StudentRepository studentRepository,ClassRepository classRepository) {
         this.studentRepository = studentRepository;
+        this.classRepository = classRepository;
+    }
+    @Override
+    public Optional<StudentDTO> addClass(Long studentId, Long classId) {
+        StudentAPI studentDTO = new StudentAPI();
+        Optional<StudentAPI> studentAPI = studentRepository.findById(studentId);
+        if(studentAPI.isEmpty()) {
+            log.error("Student with id " + studentId + " not found");
+        }
+        Optional<ClassAPI> classDTO1 = classRepository.findById(classId);
+        ClassAPI classAPI = classDTO1.get();
+        classAPI.setClassId(classDTO1.get().getClassId());
+        classAPI.setClassName(classDTO1.get().getClassName());
+        classAPI.setClassNumber(classDTO1.get().getClassNumber());
+        studentDTO.setClassId(classAPI);
+        studentRepository.save(studentDTO);
+        return null;
     }
 
     @Override
@@ -34,12 +53,33 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void updateStudent(StudentDTO student, Long id) {
+        Optional<StudentAPI> stu = studentRepository.findById(id);
+        if (stu.isEmpty()) {
+            log.error("Student not found",id);
+        }
+        StudentAPI stud = stu.get();
+        stud.setStudentName(stu.get().getStudentName());
+        stud.setGender(stu.get().getGender());
+        stud.setDob(stu.get().getDob());
+        stud.setEmail(stu.get().getEmail());
+        studentRepository.save(stud);
 
     }
 
     @Override
-    public void deleteStudent(Long id) {
+    public StudentDTO deleteStudent(Long id) {
+        Optional<StudentAPI> stu = studentRepository.findById(id);
+        if (stu.isEmpty()) {
+            log.error("Student not found",id);
+            return null;
+        }
+        StudentDTO studentDTO = new StudentDTO();
+        studentDTO.setStudentName(stu.get().getStudentName());
+        studentDTO.setGender(stu.get().getGender());
+        studentDTO.setDob(stu.get().getDob());
+        studentDTO.setEmail(stu.get().getEmail());
         studentRepository.deleteById(id);
+        return studentDTO;
     }
 
     @Override
@@ -58,7 +98,9 @@ public class StudentServiceImpl implements StudentService {
         ClassAPI clazz = new ClassAPI();
         if(clazz != null){
             ClassDTO classDTO = new ClassDTO();
+            classDTO.setClassId(clazz.getClassId());
             classDTO.setClassName(clazz.getClassName());
+            classDTO.setClassNumber(classDTO.getClassNumber());
             student.setClassDTO(classDTO);
         }
         return student;
@@ -66,6 +108,21 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<StudentDTO> getAllStudents() {
-        return List.of();
+
+        List<StudentAPI> students = studentRepository.findAll();
+
+        return students.stream()
+                .map(this::mapToDTO)
+                .toList();
+    }
+
+    private StudentDTO mapToDTO(StudentAPI student) {
+        StudentDTO studentDTO = new StudentDTO();
+                studentDTO.setStudentId(student.getStudentId());
+                studentDTO.setStudentName(student.getStudentName());
+                studentDTO.setDob(student.getDob());
+                studentDTO.setEmail(student.getEmail());
+                studentDTO.setClassDTO(new ClassDTO());
+        return studentDTO;
     }
 }
