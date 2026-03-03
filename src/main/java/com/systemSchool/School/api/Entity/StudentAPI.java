@@ -23,6 +23,7 @@ public class StudentAPI {
     @Column(unique=true, nullable=false)
     private String email;
     @ManyToOne
-    private ClassAPI classId;
+    @JoinColumn(name = "class_id")
+    private ClassAPI classAPI;
 
 }

@@ -18,7 +18,7 @@ public class TeacherDTO {
     @JsonProperty("teacher_name")
     private String teacherName;
     @JsonProperty("teacher_age")
-    private Integer teacherAge;
+    private Long teacherAge;
     @JsonProperty("teacher_gender")
     private String teacherGender;
     @JsonProperty("teacher_salary")

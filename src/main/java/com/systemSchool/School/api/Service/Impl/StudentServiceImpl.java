@@ -26,19 +26,20 @@ public  class StudentServiceImpl implements StudentService {
     }
     @Override
     public Optional<StudentDTO> addClass(Long studentId, Long classId) {
-        StudentAPI studentDTO = new StudentAPI();
-        Optional<StudentAPI> studentAPI = studentRepository.findById(studentId);
-        if(studentAPI.isEmpty()) {
-            log.error("Student with id " + studentId + " not found");
-        }
-        Optional<ClassAPI> classDTO1 = classRepository.findById(classId);
-        ClassAPI classAPI = classDTO1.get();
-        classAPI.setClassId(classDTO1.get().getClassId());
-        classAPI.setClassName(classDTO1.get().getClassName());
-        classAPI.setClassNumber(classDTO1.get().getClassNumber());
-        studentDTO.setClassId(classAPI);
-        studentRepository.save(studentDTO);
-        return null;
+        // 1️⃣ Get student from DB
+        StudentAPI student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        // 2️⃣ Get class from DB
+        ClassAPI classAPI = classRepository.findById(classId)
+                .orElseThrow(() -> new RuntimeException("Class not found"));
+
+        // 3️⃣ Set relation
+        student.setClassAPI(classAPI);
+
+        // 4️⃣ Save (UPDATE)
+        studentRepository.save(student);
+        return Optional.empty();
     }
 
     @Override

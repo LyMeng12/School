@@ -1,6 +1,7 @@
 package com.systemSchool.School.api.Service.Impl;
 
 import com.systemSchool.School.api.DTO.ClassDTO;
+import com.systemSchool.School.api.Entity.ClassAPI;
 import com.systemSchool.School.api.Repository.ClassRepository;
 import com.systemSchool.School.api.Service.ClassService;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,10 @@ public class ClassServiceImpl implements ClassService {
 
     @Override
     public void newClass(ClassDTO Class) {
-
+        ClassAPI classAPI = new ClassAPI();
+        classAPI.setClassName(Class.getClassName());
+        classAPI.setClassNumber(Class.getClassNumber());
+        classRepository.save(classAPI);
     }
 
     @Override

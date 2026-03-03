@@ -22,13 +22,13 @@ public class StudentController {
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
-    @PutMapping("/Student/{studentId}/class/{classId}")
+        @PutMapping("/student/{studentId}/class/{classId}")
     public ResponseEntity<StudentDTO> updateStudent(@PathVariable Long studentId,@PathVariable Long classId){
         Optional<StudentDTO> stu = studentService.addClass(studentId,classId);
         if(stu==null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        return ResponseEntity.ok(stu.get());
+        return ResponseEntity.ok().body(stu.get());
     }
 
     @PostMapping("/student/post")
