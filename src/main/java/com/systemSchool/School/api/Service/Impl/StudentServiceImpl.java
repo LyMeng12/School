@@ -53,6 +53,19 @@ public  class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public StudentDTO deleteClass(Long studentId) {
+        Optional<StudentAPI> optionalStudent = studentRepository.findById(studentId);
+        if (optionalStudent.isEmpty()) {
+            log.error("Student with id {} not found", studentId);
+            return null;
+        }
+        StudentAPI student = optionalStudent.get();
+        student.setClassAPI(null);
+        studentRepository.save(student);
+        return student;
+    }
+
+    @Override
     public void newStudent(StudentDTO student) {
         StudentAPI stu = new StudentAPI();
         stu.setStudentName(student.getStudentName());
@@ -95,26 +108,31 @@ public  class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentDTO getStudent(Long id) {
-        StudentDTO student = new StudentDTO();
         Optional<StudentAPI> stu = studentRepository.findById(id);
         if (stu.isEmpty()) {
             log.error("Student not found",id);
             return null;
         }
-        student.setStudentId(stu.get().getStudentId());
-        student.setStudentName(stu.get().getStudentName());
-        student.setGender(stu.get().getGender());
-        student.setDob(stu.get().getDob());
-        student.setEmail(stu.get().getEmail());
-        ClassAPI clazz = new ClassAPI();
-        if(clazz != null){
+        StudentAPI student = stu.get();
+        StudentDTO studentDTO = new StudentDTO();
+
+        studentDTO.setStudentId(student.getStudentId());
+        studentDTO.setStudentName(student.getStudentName());
+        studentDTO.setGender(student.getGender());
+        studentDTO.setDob(student.getDob());
+        studentDTO.setEmail(student.getEmail());
+
+        if (student.getClassAPI() != null) {
+
+            ClassAPI classAPI = student.getClassAPI();
+
             ClassDTO classDTO = new ClassDTO();
-            classDTO.setClassId(clazz.getClassId());
-            classDTO.setClassName(clazz.getClassName());
-            classDTO.setClassNumber(classDTO.getClassNumber());
-            student.setClassDTO(classDTO);
+            classDTO.setClassId(classAPI.getClassId());
+            classDTO.setClassName(classAPI.getClassName());
+            classDTO.setClassNumber(classAPI.getClassNumber());
+            studentDTO.setClassDTO(classDTO);
         }
-        return student;
+        return studentDTO;
     }
 
     @Override

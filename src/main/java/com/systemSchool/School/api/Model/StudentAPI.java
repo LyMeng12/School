@@ -1,5 +1,6 @@
 package com.systemSchool.School.api.Model;
 
+import com.systemSchool.School.api.DTO.StudentDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +11,7 @@ import lombok.ToString;
 @ToString
 @Entity
 @Table(name="Student")
-public class StudentAPI {
+public class StudentAPI extends StudentDTO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long studentId;

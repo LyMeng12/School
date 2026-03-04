@@ -1,8 +1,8 @@
 package com.systemSchool.School.api.Controller;
 
 import com.systemSchool.School.api.DTO.StudentDTO;
+import com.systemSchool.School.api.Model.StudentAPI;
 import com.systemSchool.School.api.Service.StudentService;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,20 +22,21 @@ public class StudentController {
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
-        @PutMapping("/student/{studentId}/class/{classId}")
-    public ResponseEntity<StudentDTO> updateStudent(@PathVariable Long classId,@PathVariable Long studentId){
-        Optional<StudentDTO> stu = studentService.addClass(classId,studentId);
-        if(stu==null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-        return ResponseEntity.ok().body(stu.get());
-    }
+
 
     @PostMapping("/student/post")
     public ResponseEntity<Object> createStudent(@RequestBody StudentDTO student){
         log.info("Create Student", student);
         studentService.newStudent(student);
         return ResponseEntity.ok().build();
+    }
+    @PutMapping("/student/{studentId}/class/{classId}")
+    public ResponseEntity<StudentDTO> updateStudent(@PathVariable Long studentId,@PathVariable Long classId){
+        Optional<StudentDTO> stu = studentService.addClass(studentId,classId);
+        if(stu==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok().body(stu.get());
     }
     @PutMapping("/student/put/{id}")
     public ResponseEntity<Object> putStudent(@PathVariable Long id, @RequestBody StudentDTO student){
@@ -57,7 +58,15 @@ public class StudentController {
         }
         return ResponseEntity.ok().body(stu);
     }
-
+    @DeleteMapping("/student_class/delete/{id}")
+    public ResponseEntity<Object> deleteStudentClass(@PathVariable Long id){
+        StudentDTO stu = studentService.deleteClass(id);
+        if(stu == null){
+            log.error("Delete Student", id);
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(stu);
+    }
     @GetMapping("/student/{id}")
     public ResponseEntity<StudentDTO> getStudent(@PathVariable Long id){
         StudentDTO stu=studentService.getStudent(id);
