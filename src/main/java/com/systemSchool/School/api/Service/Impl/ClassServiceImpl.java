@@ -1,7 +1,7 @@
 package com.systemSchool.School.api.Service.Impl;
 
 import com.systemSchool.School.api.DTO.ClassDTO;
-import com.systemSchool.School.api.Entity.ClassAPI;
+import com.systemSchool.School.api.Model.ClassAPI;
 import com.systemSchool.School.api.Repository.ClassRepository;
 import com.systemSchool.School.api.Service.ClassService;
 import org.springframework.stereotype.Service;

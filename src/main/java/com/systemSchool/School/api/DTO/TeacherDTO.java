@@ -1,8 +1,7 @@
 package com.systemSchool.School.api.DTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.systemSchool.School.api.Entity.ClassAPI;
-import com.systemSchool.School.api.Entity.SubjectAPI;
+import com.systemSchool.School.api.Model.SubjectAPI;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

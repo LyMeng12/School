@@ -1,12 +1,9 @@
 package com.systemSchool.School.api.DTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.systemSchool.School.api.Entity.ClassAPI;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.util.List;
 
 @Getter
 @Setter

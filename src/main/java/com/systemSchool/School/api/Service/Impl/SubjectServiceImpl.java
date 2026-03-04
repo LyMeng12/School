@@ -2,15 +2,14 @@ package com.systemSchool.School.api.Service.Impl;
 
 import com.systemSchool.School.api.DTO.SubjectDTO;
 import com.systemSchool.School.api.DTO.TeacherDTO;
-import com.systemSchool.School.api.Entity.SubjectAPI;
-import com.systemSchool.School.api.Entity.TeacherAPI;
+import com.systemSchool.School.api.Model.SubjectAPI;
+import com.systemSchool.School.api.Model.TeacherAPI;
 import com.systemSchool.School.api.Repository.SubjectRepository;
 import com.systemSchool.School.api.Repository.TeacherRepository;
 import com.systemSchool.School.api.Service.SubjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

@@ -23,8 +23,8 @@ public class StudentController {
         this.studentService = studentService;
     }
         @PutMapping("/student/{studentId}/class/{classId}")
-    public ResponseEntity<StudentDTO> updateStudent(@PathVariable Long studentId,@PathVariable Long classId){
-        Optional<StudentDTO> stu = studentService.addClass(studentId,classId);
+    public ResponseEntity<StudentDTO> updateStudent(@PathVariable Long classId,@PathVariable Long studentId){
+        Optional<StudentDTO> stu = studentService.addClass(classId,studentId);
         if(stu==null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }

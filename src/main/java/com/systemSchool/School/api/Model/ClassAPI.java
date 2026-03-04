@@ -1,4 +1,4 @@
-package com.systemSchool.School.api.Entity;
+package com.systemSchool.School.api.Model;
 
 import jakarta.persistence.*;
 import lombok.Getter;

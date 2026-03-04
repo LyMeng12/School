@@ -2,8 +2,8 @@ package com.systemSchool.School.api.Service.Impl;
 
 import com.systemSchool.School.api.DTO.ClassDTO;
 import com.systemSchool.School.api.DTO.StudentDTO;
-import com.systemSchool.School.api.Entity.ClassAPI;
-import com.systemSchool.School.api.Entity.StudentAPI;
+import com.systemSchool.School.api.Model.ClassAPI;
+import com.systemSchool.School.api.Model.StudentAPI;
 import com.systemSchool.School.api.Repository.ClassRepository;
 import com.systemSchool.School.api.Repository.StudentRepository;
 import com.systemSchool.School.api.Service.StudentService;
@@ -24,22 +24,32 @@ public  class StudentServiceImpl implements StudentService {
         this.studentRepository = studentRepository;
         this.classRepository = classRepository;
     }
+
     @Override
-    public Optional<StudentDTO> addClass(Long studentId, Long classId) {
-        // 1️⃣ Get student from DB
-        StudentAPI student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new RuntimeException("Student not found"));
+    public Optional<StudentDTO> addClass(Long id, Long classDTO) {
+        Optional<StudentAPI> optionalStudent = studentRepository.findById(id);
 
-        // 2️⃣ Get class from DB
-        ClassAPI classAPI = classRepository.findById(classId)
-                .orElseThrow(() -> new RuntimeException("Class not found"));
+        if (optionalStudent.isEmpty()) {
+            log.error("Student with id {} not found", id);
+            return Optional.empty();
+        }
 
-        // 3️⃣ Set relation
+        Optional<ClassAPI> optionalClass = classRepository.findById(classDTO);
+
+        if (optionalClass.isEmpty()) {
+            log.error("Class with id {} not found", classDTO);
+            return Optional.empty();
+        }
+
+        StudentAPI student = optionalStudent.get();
+        ClassAPI classAPI = optionalClass.get();
+
         student.setClassAPI(classAPI);
 
-        // 4️⃣ Save (UPDATE)
-        studentRepository.save(student);
-        return Optional.empty();
+        StudentAPI savedStudent = studentRepository.save(student);
+
+        return Optional.of(mapToDTO(savedStudent));
+
     }
 
     @Override
@@ -59,10 +69,10 @@ public  class StudentServiceImpl implements StudentService {
             log.error("Student not found",id);
         }
         StudentAPI stud = stu.get();
-        stud.setStudentName(stu.get().getStudentName());
-        stud.setGender(stu.get().getGender());
-        stud.setDob(stu.get().getDob());
-        stud.setEmail(stu.get().getEmail());
+        stud.setStudentName(student.getStudentName());
+        stud.setGender(student.getGender());
+        stud.setDob(student.getDob());
+        stud.setEmail(student.getEmail());
         studentRepository.save(stud);
 
     }
