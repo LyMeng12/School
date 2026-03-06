@@ -19,6 +19,8 @@ public class TeacherAPI {
     private String teacherName;
     private String teacherSubject;
     private Double salary;
+    @OneToOne(mappedBy = "teacher")
+    private SubjectAPI subject;
 
     @ManyToMany
     @JoinTable(
