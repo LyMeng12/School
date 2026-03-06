@@ -1,5 +1,6 @@
 package com.systemSchool.School.api.Model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,20 +12,18 @@ import java.util.List;
 @Setter
 @ToString
 @Entity
-@Table(name="Class")
+@Table(name="ClassAPI")
 public class ClassAPI {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long classId;
-    @Column(unique=true, nullable=false)
     private String className;
-    @Column(unique=true, nullable=false)
-    private String classNumber;
+    private String room;
 
-    @OneToMany
-    private List<StudentAPI> students;
+    @OneToMany(mappedBy = "classAPI",cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<StudentAPI> studentAPI;
 
     @ManyToMany
-    @JoinTable(name = "class_teacher",joinColumns = @JoinColumn(name = "class_id"),inverseJoinColumns = @JoinColumn(name = "teacher_id"))
-    private List<TeacherAPI> teachers;
+    @JoinColumn(name = "classes")
+    private List<TeacherAPI> teacherAPI;
 }

@@ -1,6 +1,7 @@
 package com.systemSchool.School.api.Model;
 
-import com.systemSchool.School.api.DTO.StudentDTO;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,21 +11,22 @@ import lombok.ToString;
 @Setter
 @ToString
 @Entity
-@Table(name="Student")
-public class StudentAPI extends StudentDTO {
+@Table(name="StudentAPI")
+public class StudentAPI {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long studentId;
-    @Column(unique=true, nullable=false)
     private String studentName;
-    @Column(unique=true, nullable=false)
     private String gender;
-    @Column(unique=true, nullable=false)
-    private String dob;
-    @Column(unique=true, nullable=false)
-    private String email;
+    private Long age;
     @ManyToOne
-    @JoinColumn(name = "class_id")
+    @JoinColumn(name="class_id")
+    @JsonBackReference
     private ClassAPI classAPI;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    @JsonBackReference
+    private TeacherAPI teacherAPI;
+
 
 }

@@ -1,29 +1,37 @@
 package com.systemSchool.School.api.Model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
 @Getter
 @Setter
+@ToString
 @Entity
-@Table(name="Teacher")
+@Table(name="TeacherAPI")
 public class TeacherAPI {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teacherId;
-    @Column(unique=true, nullable=false)
     private String teacherName;
-    @Column(unique=true, nullable=false)
-    private Long teacherAge;
-    @Column(unique=true, nullable=false)
-    private String teacherGender;
-    @Column(unique=true, nullable=false)
-    private Double teacherSalary;
-    @ManyToOne
-    private SubjectAPI subjectAPI;
+    private String teacherSubject;
+    private Double salary;
+
     @ManyToMany
-    private List<ClassAPI> classAPI;
+    @JoinTable(
+            name = "teacher_class",
+            joinColumns = @JoinColumn(name = "teacher_id"),
+            inverseJoinColumns = @JoinColumn(name = "class_id")
+    )
+    private List<ClassAPI> classes;
+    @OneToMany(mappedBy = "studentAPI",cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<StudentAPI> students;
+
+
+
+
 }
