@@ -14,22 +14,21 @@ import java.util.List;
 @Entity
 @Table(name="TeacherAPI")
 public class TeacherAPI {
+
     @Id
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teacherId;
     private String teacherName;
-    private String teacherSubject;
-    private Double salary;
-    @OneToOne(mappedBy = "teacher")
-    private SubjectAPI subject;
 
-    @ManyToMany
-    @JoinTable(
-            name = "teacher_class",
-            joinColumns = @JoinColumn(name = "teacher_id"),
-            inverseJoinColumns = @JoinColumn(name = "class_id")
-    )
+    private Double salary;
+    @OneToMany(mappedBy = "teacher")
+    private List<SubjectAPI> subjects;
+
+
+    @ManyToMany(mappedBy = "teacherAPI")
     private List<ClassAPI> classes;
-    @OneToMany(mappedBy = "studentAPI",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "TeacherAPI",cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<StudentAPI> students;
 

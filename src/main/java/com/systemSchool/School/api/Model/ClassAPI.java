@@ -15,15 +15,20 @@ import java.util.List;
 @Table(name="ClassAPI")
 public class ClassAPI {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long classId;
     private String className;
-    private String room;
+    private String classRoom;
 
     @OneToMany(mappedBy = "classAPI",cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<StudentAPI> studentAPI;
 
     @ManyToMany
-    @JoinColumn(name = "classes")
+    @JoinTable(
+            name = "class_teacher",
+            joinColumns = @JoinColumn(name = "class_id"),
+            inverseJoinColumns = @JoinColumn(name = "teacher_id")
+    )
     private List<TeacherAPI> teacherAPI;
 }

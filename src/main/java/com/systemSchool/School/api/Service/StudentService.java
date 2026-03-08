@@ -1,19 +1,15 @@
 package com.systemSchool.School.api.Service;
 
-import com.systemSchool.School.api.DTO.ClassDTO;
-import com.systemSchool.School.api.DTO.StudentDTO;
+
+import com.systemSchool.School.api.DTO.StudentDTO.StudentRequest;
+import com.systemSchool.School.api.DTO.StudentDTO.StudentResponse;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface StudentService {
-
-    Optional<StudentDTO> addClass(Long studentId, Long classId);
-
-    StudentDTO deleteClass(Long studentId);
-    void newStudent(StudentDTO student);
-    void updateStudent(StudentDTO student,Long id);
-    StudentDTO deleteStudent(Long id);
-    StudentDTO getStudent(Long id);
-    List<StudentDTO> getAllStudents();
+    void newStudent(StudentRequest studentRequest);
+    void updateStudent(Long id,StudentRequest studentRequest);
+    void deleteStudent(Long id);
+    StudentResponse getStudent(Long id);
+    List<StudentResponse> getStudents();
 }

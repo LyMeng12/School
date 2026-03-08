@@ -1,13 +1,15 @@
 package com.systemSchool.School.api.Service;
 
-import com.systemSchool.School.api.DTO.TeacherDTO;
+
+import com.systemSchool.School.api.DTO.TeacherDTO.TeacherRequest;
+import com.systemSchool.School.api.DTO.TeacherDTO.TeacherResponse;
 
 import java.util.List;
 
 public interface TeacherService {
-    void newTeacher(TeacherDTO teacher);
-    void updateTeacher(TeacherDTO teacher,Long id);
-    void deleteTeacher(Long id);
-    TeacherDTO getTeacher(Long id);
-    List<TeacherDTO> getAllTeachers();
+    void newTeacher(TeacherRequest teacherRequest);
+    void updateTeacher(Long Id,TeacherRequest teacherRequest);
+    void deleteTeacher(Long Id);
+    TeacherResponse getTeacherById(Long Id);
+    List<TeacherResponse> getAllTeachers();
 }

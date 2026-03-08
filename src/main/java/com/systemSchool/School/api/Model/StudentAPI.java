@@ -14,6 +14,7 @@ import lombok.ToString;
 @Table(name="StudentAPI")
 public class StudentAPI {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long studentId;
     private String studentName;
     private String gender;
@@ -26,7 +27,7 @@ public class StudentAPI {
     @ManyToOne
     @JoinColumn(name = "teacher_id")
     @JsonBackReference
-    private TeacherAPI teacherAPI;
+    private TeacherAPI TeacherAPI;
 
 
 }

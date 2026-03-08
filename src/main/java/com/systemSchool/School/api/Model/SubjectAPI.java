@@ -15,12 +15,13 @@ import java.util.List;
 public class SubjectAPI {
 
     @Id
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long subjectId;
 
     private String subjectName;
 
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "teacher_id")
     private TeacherAPI teacher;
 }
