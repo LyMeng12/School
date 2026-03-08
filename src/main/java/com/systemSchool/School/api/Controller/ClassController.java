@@ -50,5 +50,15 @@ public class ClassController {
         return ResponseEntity.notFound().build();
 
     }
+    @PutMapping("/class/{id}")
+    public ResponseEntity<ClassResponse> updateClass(@PathVariable Long id, @RequestBody ClassRequest classRequest) {
+        ClassResponse classResponse = classService.getClassById(id);
+        if (classResponse!=null) {
+            classService.updateClass(id, classRequest);
+            log.info("Class updated", classRequest);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
 
 }

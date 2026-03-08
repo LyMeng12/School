@@ -18,6 +18,6 @@ public class SubjectResponse {
     @JsonProperty("SubjectName")
     private String SubjectName;
     @JsonProperty("Teachers")
-    private List<TeacherRequest> Teachers;
+    private TeacherRequest Teachers;
 
 }

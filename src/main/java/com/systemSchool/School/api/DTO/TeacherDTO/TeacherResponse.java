@@ -28,5 +28,5 @@ public class TeacherResponse {
     @JsonProperty("ClassS")
     private List<ClassRequest> Classes;
     @JsonProperty("Students")
-    private List<StudentResponse> Students;
+    private List<StudentRequest> Students;
 }
