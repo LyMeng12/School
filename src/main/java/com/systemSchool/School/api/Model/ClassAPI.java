@@ -1,6 +1,7 @@
 package com.systemSchool.School.api.Model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.systemSchool.School.api.DTO.StudentDTO.StudentRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,4 +32,5 @@ public class ClassAPI {
             inverseJoinColumns = @JoinColumn(name = "teacher_id")
     )
     private List<TeacherAPI> teacherAPI;
+
 }
