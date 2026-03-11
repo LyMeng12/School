@@ -55,6 +55,11 @@ public class StudentController {
         log.error("Id Not found: " + id);
         return ResponseEntity.noContent().build();
     }
+    @PostMapping("/student/post")
+    public ResponseEntity<StudentResponse> postStudent(@RequestBody StudentRequest studentRequest) {
+        StudentResponse studentResponse= studentService.newStudent(studentRequest);
+        return ResponseEntity.ok().body(studentResponse);
+    }
 
 
 }

@@ -9,6 +9,8 @@ import lombok.ToString;
 @Setter
 @ToString
 public class StudentRequest {
+    @JsonProperty("StudentId")
+    private Long studentId;
     @JsonProperty("StudentName")
     private String studentName;
     @JsonProperty("StudentGender")

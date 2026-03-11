@@ -8,6 +8,7 @@ import com.systemSchool.School.api.DTO.TeacherDTO.TeacherRequest;
 import com.systemSchool.School.api.Model.ClassAPI;
 import com.systemSchool.School.api.Model.StudentAPI;
 import com.systemSchool.School.api.Repository.ClassRepository;
+import com.systemSchool.School.api.Repository.StudentRepository;
 import com.systemSchool.School.api.Service.ClassService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,9 +21,11 @@ import java.util.Optional;
 @Slf4j
 public class ClassServiceImpl implements ClassService {
     private final ClassRepository classRepository;
+    private final StudentRepository studentRepository;
 
-    public ClassServiceImpl(ClassRepository classRepository) {
+    public ClassServiceImpl(ClassRepository classRepository, StudentRepository studentRepository) {
         this.classRepository = classRepository;
+        this.studentRepository = studentRepository;
     }
 
     @Override
@@ -67,6 +70,7 @@ public class ClassServiceImpl implements ClassService {
         classResponseDTO.setStudents(
                 classResponse.get().getStudentAPI().stream().map(studentAPI ->{
                     StudentRequest studentResponseDTO = new StudentRequest();
+                    studentResponseDTO.setStudentId(studentAPI.getStudentId());
                     studentResponseDTO.setStudentName(studentAPI.getStudentName());
                     studentResponseDTO.setStudentGender(studentAPI.getGender());
                     studentResponseDTO.setStudentAge(studentAPI.getAge());
@@ -97,6 +101,7 @@ public class ClassServiceImpl implements ClassService {
                     classAPI.getStudentAPI().stream().map(studentAPI -> {
 
                         StudentRequest studentResponseDTO = new StudentRequest();
+                        studentResponseDTO.setStudentId(studentAPI.getStudentId());
                         studentResponseDTO.setStudentName(studentAPI.getStudentName());
                         studentResponseDTO.setStudentAge(studentAPI.getAge());
                         studentResponseDTO.setStudentGender(studentAPI.getGender());
@@ -160,15 +165,15 @@ public class ClassServiceImpl implements ClassService {
         if(classResponse.isEmpty()) {
             log.error("Class not found",classId);
         }
+        StudentAPI studentResponseDTO = new StudentAPI();
+        studentResponseDTO.setStudentId(studentRequest.getStudentId());
+        studentResponseDTO.setStudentName(studentRequest.getStudentName());
+        studentResponseDTO.setGender(studentRequest.getStudentGender());
+        studentResponseDTO.setAge(studentRequest.getStudentAge());
+        studentResponseDTO.setClassAPI(classResponse.get());
+        classResponse.get().getStudentAPI().add(studentResponseDTO);
 
-                classResponse.get().getStudentAPI().stream().map(studentAPI -> {
-                    StudentRequest studentResponseDTO = new StudentRequest();
-                    studentResponseDTO.setStudentName(studentAPI.getStudentName());
-                    studentResponseDTO.setStudentGender(studentAPI.getGender());
-                    studentResponseDTO.setStudentAge(studentAPI.getAge());
-                    return studentResponseDTO;
-                }).toList();
-                classRepository.save(classResponse.get());
+        classRepository.save(classResponse.get());
     }
 
     @Override
@@ -184,7 +189,20 @@ public class ClassServiceImpl implements ClassService {
     }
 
     @Override
-    public void updateStudentInClass(Long classId, String StudentName, StudentRequest studentRequest) {
+    public void updateStudentInClass(Long classId,Long studentId, StudentRequest studentRequest) {
+        Optional<ClassAPI> classResponse = classRepository.findById(classId);
+        if(classResponse.isEmpty()) {
+            log.error("Class not found",classId);
+        }
+        Optional<StudentAPI> studentResponse = studentRepository.findById(studentId);
+        if(studentResponse.isEmpty()) {
+            log.error("Student not found",studentId);
+        }
+        studentResponse.get().setClassAPI(null);
+        studentRepository.save(studentResponse.get());
+        StudentAPI studentResponseDTO = studentResponse.get();
+        studentResponseDTO.setClassAPI(classResponse.get());
+        studentRepository.save(studentResponseDTO);
 
     }
 

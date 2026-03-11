@@ -21,7 +21,7 @@ public interface ClassService {
     ClassResponse getClassByStudentName(String StudentName);
     void addStudentIntoClass(Long classId,StudentRequest studentRequest);
     void deleteStudentFromClass(Long classId, String StudentName);
-    void updateStudentInClass(Long classId,String StudentName, StudentRequest studentRequest);
+    void updateStudentInClass(Long classId,Long studentId, StudentRequest studentRequest);
 
 //    teacher
 ClassResponse getClassByTeacherName(String TeacherName);

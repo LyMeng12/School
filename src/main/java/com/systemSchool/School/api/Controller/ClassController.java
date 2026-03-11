@@ -2,6 +2,7 @@ package com.systemSchool.School.api.Controller;
 
 import com.systemSchool.School.api.DTO.ClassDTO.ClassRequest;
 import com.systemSchool.School.api.DTO.ClassDTO.ClassResponse;
+import com.systemSchool.School.api.DTO.StudentDTO.StudentRequest;
 import com.systemSchool.School.api.Model.ClassAPI;
 import com.systemSchool.School.api.Service.ClassService;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +57,20 @@ public class ClassController {
         if (classResponse!=null) {
             classService.updateClass(id, classRequest);
             log.info("Class updated", classRequest);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+
+    // Student
+
+    @PostMapping("/class/{id}/student/post")
+    public ResponseEntity<ClassResponse> postStudent(@PathVariable Long id, @RequestBody StudentRequest studentRequest) {
+        ClassResponse classResponse = classService.getClassById(id);
+        if (classResponse!=null) {
+            classService.addStudentIntoClass(id, studentRequest);
+            log.info("Student added", studentRequest);
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();

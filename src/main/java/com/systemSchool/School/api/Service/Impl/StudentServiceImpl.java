@@ -1,11 +1,9 @@
 package com.systemSchool.School.api.Service.Impl;
 
 import com.systemSchool.School.api.DTO.ClassDTO.ClassRequest;
-import com.systemSchool.School.api.DTO.ClassDTO.ClassResponse;
 import com.systemSchool.School.api.DTO.StudentDTO.StudentRequest;
 import com.systemSchool.School.api.DTO.StudentDTO.StudentResponse;
 import com.systemSchool.School.api.DTO.TeacherDTO.TeacherRequest;
-import com.systemSchool.School.api.DTO.TeacherDTO.TeacherResponse;
 import com.systemSchool.School.api.Model.ClassAPI;
 import com.systemSchool.School.api.Model.StudentAPI;
 import com.systemSchool.School.api.Model.TeacherAPI;
@@ -29,12 +27,13 @@ public class StudentServiceImpl implements StudentService {
 
 
     @Override
-    public void newStudent(StudentRequest studentRequest) {
+    public StudentResponse newStudent(StudentRequest studentRequest) {
         StudentAPI studentAPI = new StudentAPI();
         studentAPI.setStudentName(studentRequest.getStudentName());
         studentAPI.setGender(studentRequest.getStudentGender());
         studentAPI.setAge(studentRequest.getStudentAge());
         studentRepository.save(studentAPI);
+        return null;
     }
 
     @Override
@@ -90,10 +89,6 @@ public class StudentServiceImpl implements StudentService {
             teacherResponse.setSalary(teacherAPI.getSalary());
             studentResponse.setTeachers(teacherResponse);
         }
-
-
-
-
         return studentResponse;
     }
 
