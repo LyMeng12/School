@@ -13,14 +13,11 @@ import java.util.List;
 @Setter
 @ToString
 public class ClassRequest {
+    @JsonProperty("ClassId")
+    private Long classId;
     @JsonProperty("ClassName")
     private String className;
     @JsonProperty("ClassRoom")
     private String classRoom;
 
-    @JsonProperty("Students")
-    private List<StudentRequest> students;
-
-    @JsonProperty("Teachers")
-    private List<TeacherRequest> teachers;
 }

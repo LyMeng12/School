@@ -16,16 +16,13 @@ public interface ClassService {
     void deleteClass(Long id);
     ClassResponse getClassById(Long id);
     List<ClassResponse> getAllClasses();
+    ClassResponse getClassByName(String className);
 
-//    student
-    ClassResponse getClassByStudentName(String StudentName);
-    void addStudentIntoClass(Long classId,StudentRequest studentRequest);
-    void deleteStudentFromClass(Long classId, String StudentName);
-    void updateStudentInClass(Long classId,Long studentId, StudentRequest studentRequest);
+    // Student
+    ClassResponse addStudetIntoClass(Long classId, List<StudentRequest> studentRequests);
+    ClassResponse removeStudentIntoClass(Long classId, List<StudentRequest> studentRequests);
 
-//    teacher
-ClassResponse getClassByTeacherName(String TeacherName);
-    void addStudentIntoClass(Long classId, TeacherRequest teacherRequest);
-    void deleteTeacherFromClass(Long classId, String TeacherName);
-    void updateTeacherInClass(Long classId,String TeacherName, TeacherRequest teacherRequest);
+    // Teacher
+    ClassResponse addTeacherIntoClass(Long classId, List<TeacherRequest> teacherRequests);
+    ClassResponse removeTeacherIntoClass(Long classId, List<TeacherRequest> teacherRequests);
 }

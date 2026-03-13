@@ -7,14 +7,17 @@ import com.systemSchool.School.api.DTO.StudentDTO.StudentResponse;
 import com.systemSchool.School.api.DTO.TeacherDTO.TeacherRequest;
 import com.systemSchool.School.api.Model.ClassAPI;
 import com.systemSchool.School.api.Model.StudentAPI;
+import com.systemSchool.School.api.Model.TeacherAPI;
 import com.systemSchool.School.api.Repository.ClassRepository;
 import com.systemSchool.School.api.Repository.StudentRepository;
+import com.systemSchool.School.api.Repository.TeacherRepository;
 import com.systemSchool.School.api.Service.ClassService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -22,10 +25,13 @@ import java.util.Optional;
 public class ClassServiceImpl implements ClassService {
     private final ClassRepository classRepository;
     private final StudentRepository studentRepository;
+    private final TeacherRepository teacherRepository;
 
-    public ClassServiceImpl(ClassRepository classRepository, StudentRepository studentRepository) {
+
+    public ClassServiceImpl(ClassRepository classRepository, StudentRepository studentRepository, TeacherRepository teacherRepository) {
         this.classRepository = classRepository;
         this.studentRepository = studentRepository;
+        this.teacherRepository = teacherRepository;
     }
 
     @Override
@@ -125,34 +131,82 @@ public class ClassServiceImpl implements ClassService {
         return classResponses;
     }
 
-
-//    Student
-
     @Override
-    public ClassResponse getClassByStudentName(String StudentName) {
-        Optional<ClassAPI> classAPI = classRepository.findByClassName(StudentName);
-        if(classAPI.isEmpty()) {
-            log.error("Class not found",StudentName);
-            return null;
+    public ClassResponse getClassByName(String className) {
+        Optional<ClassAPI>classResponse = classRepository.findByClassName(className);
+        if(classResponse.isEmpty()) {
+            log.error("Class not found",className);
         }
         ClassResponse classResponseDTO = new ClassResponse();
-        classResponseDTO.setClassId(classAPI.get().getClassId());
-        classResponseDTO.setClassName(classAPI.get().getClassName());
-        classResponseDTO.setClassRoom(classAPI.get().getClassRoom());
+        classResponseDTO.setClassId(classResponse.get().getClassId());
+        classResponseDTO.setClassName(classResponse.get().getClassName());
+        classResponseDTO.setClassRoom(classResponse.get().getClassRoom());
         classResponseDTO.setStudents(
-                classAPI.get().getStudentAPI().stream().map(studentAPI -> {
+                classResponse.get().getStudentAPI().stream().map(studentAPI -> {
+
                     StudentRequest studentResponseDTO = new StudentRequest();
+                    studentResponseDTO.setStudentId(studentAPI.getStudentId());
+                    studentResponseDTO.setStudentName(studentAPI.getStudentName());
+                    studentResponseDTO.setStudentAge(studentAPI.getAge());
+                    studentResponseDTO.setStudentGender(studentAPI.getGender());
+                    return studentResponseDTO;
+
+                }).toList()
+        );
+        classResponseDTO.setTeachers(
+                classResponse.get().getTeacherAPI().stream().map(teacherAPI -> {
+
+                    TeacherRequest teacherResponseDTO = new TeacherRequest();
+                    teacherResponseDTO.setTeacherName(teacherAPI.getTeacherName());
+                    teacherResponseDTO.setSalary(teacherAPI.getSalary());
+                    return teacherResponseDTO;
+
+                }).toList()
+        );
+        return classResponseDTO;
+    }
+
+    @Override
+    public ClassResponse addStudetIntoClass(Long classId, List<StudentRequest> students) {
+        Optional<ClassAPI> classResponse = classRepository.findById(classId);
+        if(classResponse.isEmpty()) {
+            log.error("Class not found",classId);
+        }
+
+        // 2. Find all students and set class
+        List<StudentAPI> studentEntities = students.stream().map(studentRequest -> {
+
+            StudentAPI student = studentRepository.findById(studentRequest.getStudentId())
+                    .orElseThrow(() -> new RuntimeException("Student not found: " + studentRequest.getStudentId()));
+
+            // assign class
+            student.setClassAPI(classResponse.get());
+
+            return student;
+
+        }).toList();
+
+        // 3. Save all students at once
+        studentRepository.saveAll(studentEntities);
+        ClassResponse classResponseDTO = new ClassResponse();
+        classResponseDTO.setClassId(classResponse.get().getClassId());
+        classResponseDTO.setClassName(classResponse.get().getClassName());
+        classResponseDTO.setClassRoom(classResponse.get().getClassRoom());
+        classResponseDTO.setStudents(
+                classResponse.get().getStudentAPI().stream().map(studentAPI ->{
+                    StudentRequest studentResponseDTO = new StudentRequest();
+                    studentResponseDTO.setStudentId(studentAPI.getStudentId());
                     studentResponseDTO.setStudentName(studentAPI.getStudentName());
                     studentResponseDTO.setStudentGender(studentAPI.getGender());
                     studentResponseDTO.setStudentAge(studentAPI.getAge());
                     return studentResponseDTO;
                 }).toList()
         );
+        //stream<List<ClassResponse>>
         classResponseDTO.setTeachers(
-                classAPI.get().getTeacherAPI().stream().map(teacherAPI -> {
+                classResponse.get().getTeacherAPI().stream().map(teacherAPI ->{
                     TeacherRequest teacherResponseDTO = new TeacherRequest();
                     teacherResponseDTO.setTeacherName(teacherAPI.getTeacherName());
-                    teacherResponseDTO.setSalary(teacherAPI.getSalary());
                     return teacherResponseDTO;
                 }).toList()
         );
@@ -160,72 +214,76 @@ public class ClassServiceImpl implements ClassService {
     }
 
     @Override
-    public void addStudentIntoClass(Long classId, StudentRequest studentRequest) {
+    public ClassResponse removeStudentIntoClass(Long classId, List<StudentRequest> studentRequests) {
         Optional<ClassAPI> classResponse = classRepository.findById(classId);
         if(classResponse.isEmpty()) {
             log.error("Class not found",classId);
         }
-        StudentAPI studentResponseDTO = new StudentAPI();
-        studentResponseDTO.setStudentId(studentRequest.getStudentId());
-        studentResponseDTO.setStudentName(studentRequest.getStudentName());
-        studentResponseDTO.setGender(studentRequest.getStudentGender());
-        studentResponseDTO.setAge(studentRequest.getStudentAge());
-        studentResponseDTO.setClassAPI(classResponse.get());
-        classResponse.get().getStudentAPI().add(studentResponseDTO);
 
-        classRepository.save(classResponse.get());
-    }
+        // 2. Find all students and set class
+        List<StudentAPI> studentEntities = studentRequests.stream().map(studentRequest -> {
 
-    @Override
-    public void deleteStudentFromClass(Long classId, String StudentName) {
-        Optional<ClassAPI> classResponse = classRepository.findById(classId);
-        if(classResponse.isEmpty()) {
-            log.error("Class not found",classId);
-        }
-        classResponse.get().getStudentAPI().stream().map(studentAPI -> {
-            studentAPI.setStudentName(null);
-            return studentAPI;
+            StudentAPI student = studentRepository.findById(studentRequest.getStudentId())
+                    .orElseThrow(() -> new RuntimeException("Student not found: " + studentRequest.getStudentId()));
+
+            // assign class
+            student.setClassAPI(null);
+
+            return student;
+
         }).toList();
+
+        // 3. Save all students at once
+        studentRepository.saveAll(studentEntities);
+        ClassResponse classResponseDTO = new ClassResponse();
+        classResponseDTO.setClassId(classResponse.get().getClassId());
+        classResponseDTO.setClassName(classResponse.get().getClassName());
+        classResponseDTO.setClassRoom(classResponse.get().getClassRoom());
+        classResponseDTO.setStudents(
+                classResponse.get().getStudentAPI().stream().map(studentAPI ->{
+                    StudentRequest studentResponseDTO = new StudentRequest();
+                    studentResponseDTO.setStudentId(studentAPI.getStudentId());
+                    studentResponseDTO.setStudentName(studentAPI.getStudentName());
+                    studentResponseDTO.setStudentGender(studentAPI.getGender());
+                    studentResponseDTO.setStudentAge(studentAPI.getAge());
+                    return studentResponseDTO;
+                }).toList()
+        );
+        //stream<List<ClassResponse>>
+        classResponseDTO.setTeachers(
+                classResponse.get().getTeacherAPI().stream().map(teacherAPI ->{
+                    TeacherRequest teacherResponseDTO = new TeacherRequest();
+                    teacherResponseDTO.setTeacherName(teacherAPI.getTeacherName());
+                    return teacherResponseDTO;
+                }).toList()
+        );
+        return classResponseDTO;
     }
 
     @Override
-    public void updateStudentInClass(Long classId,Long studentId, StudentRequest studentRequest) {
-        Optional<ClassAPI> classResponse = classRepository.findById(classId);
-        if(classResponse.isEmpty()) {
+    public ClassResponse addTeacherIntoClass(Long classId, List<TeacherRequest> teacherRequests) {
+        Optional<ClassAPI> classAPI = classRepository.findById(classId);
+        if(classAPI.isEmpty()) {
             log.error("Class not found",classId);
+            return null;
         }
-        Optional<StudentAPI> studentResponse = studentRepository.findById(studentId);
-        if(studentResponse.isEmpty()) {
-            log.error("Student not found",studentId);
-        }
-        studentResponse.get().setClassAPI(null);
-        studentRepository.save(studentResponse.get());
-        StudentAPI studentResponseDTO = studentResponse.get();
-        studentResponseDTO.setClassAPI(classResponse.get());
-        studentRepository.save(studentResponseDTO);
-
-    }
-
-
-//    teacher
-
-    @Override
-    public ClassResponse getClassByTeacherName(String TeacherName) {
+        List<TeacherAPI> teacherList = teacherRequests.stream().map(
+                teacher -> {
+                    TeacherAPI teacherAPI = teacherRepository.findById(teacher.getTeacherId());
+                    if(teacher.getTeacherId()==null) {
+                        log.error("Teacher not found",teacher.getTeacherId());
+                        return null;
+                    }
+                    teacherAPI.setClasses(classAPI);
+                }
+        ).toList()
         return null;
     }
 
     @Override
-    public void addStudentIntoClass(Long classId, TeacherRequest teacherRequest) {
-
+    public ClassResponse removeTeacherIntoClass(Long classId, List<TeacherRequest> teacherRequests) {
+        return null;
     }
 
-    @Override
-    public void deleteTeacherFromClass(Long classId, String TeacherName) {
 
-    }
-
-    @Override
-    public void updateTeacherInClass(Long classId, String TeacherName, TeacherRequest teacherRequest) {
-
-    }
 }

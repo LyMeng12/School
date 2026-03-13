@@ -7,6 +7,7 @@ import com.systemSchool.School.api.DTO.TeacherDTO.TeacherRequest;
 import com.systemSchool.School.api.Model.ClassAPI;
 import com.systemSchool.School.api.Model.StudentAPI;
 import com.systemSchool.School.api.Model.TeacherAPI;
+import com.systemSchool.School.api.Repository.ClassRepository;
 import com.systemSchool.School.api.Repository.StudentRepository;
 import com.systemSchool.School.api.Service.StudentService;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +21,11 @@ import java.util.Optional;
 @Service
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
+    private final ClassRepository classRepository;
 
-    public StudentServiceImpl(StudentRepository studentRepository) {
+    public StudentServiceImpl(StudentRepository studentRepository,ClassRepository classRepository) {
         this.studentRepository = studentRepository;
+        this.classRepository = classRepository;
     }
 
 
@@ -93,6 +96,39 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public StudentResponse getStudentByName(String name) {
+        Optional<StudentAPI> student = studentRepository.findByStudentName(name);
+        if (student.isEmpty()) {
+            log.error("Student with name {} not found", name);
+            return null;
+        }
+        StudentResponse studentResponse = new StudentResponse();
+        studentResponse.setStudentId(student.get().getStudentId());
+        studentResponse.setStudentName(student.get().getStudentName());
+        studentResponse.setStudentGender(student.get().getGender());
+        studentResponse.setStudentAge(student.get().getAge());
+        ClassAPI classAPI = student.get().getClassAPI();
+        if(classAPI == null) {
+            studentResponse.setClasses(null);
+        }else {
+            ClassRequest classResponse = new ClassRequest();
+            classResponse.setClassName(classAPI.getClassName());
+            classResponse.setClassRoom(classAPI.getClassRoom());
+            studentResponse.setClasses(classResponse);
+        }
+        TeacherAPI teacherAPI = student.get().getTeacherAPI();
+        if(teacherAPI == null) {
+            studentResponse.setTeachers(null);
+        }else {
+            TeacherRequest teacherResponse = new TeacherRequest();
+            teacherResponse.setTeacherId(teacherAPI.getTeacherId());
+            teacherResponse.setTeacherName(teacherAPI.getTeacherName());
+            studentResponse.setTeachers(teacherResponse);
+        }
+        return studentResponse;
+    }
+
+    @Override
     public List<StudentResponse> getStudents() {
         List<StudentAPI> studentAPIList = studentRepository.findAll();
         List<StudentResponse> studentResponseList = new ArrayList<>();
@@ -108,6 +144,7 @@ public class StudentServiceImpl implements StudentService {
             }
             else {
                 ClassRequest classResponse = new ClassRequest();
+                classResponse.setClassId(classAPI.getClassId());
                 classResponse.setClassName(classAPI.getClassName());
                 classResponse.setClassRoom(classAPI.getClassRoom());
                 studentResponse.setClasses(classResponse);
@@ -118,6 +155,7 @@ public class StudentServiceImpl implements StudentService {
             }
             else {
                 TeacherRequest teacherResponse = new TeacherRequest();
+                teacherResponse.setTeacherId(teacherAPI.getTeacherId());
                 teacherResponse.setTeacherName(teacherAPI.getTeacherName());
                 teacherResponse.setSalary(teacherAPI.getSalary());
                 studentResponse.setTeachers(teacherResponse);
@@ -126,4 +164,6 @@ public class StudentServiceImpl implements StudentService {
         }
         return studentResponseList;
     }
+
+
 }

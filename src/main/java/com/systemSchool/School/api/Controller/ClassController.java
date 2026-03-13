@@ -3,8 +3,10 @@ package com.systemSchool.School.api.Controller;
 import com.systemSchool.School.api.DTO.ClassDTO.ClassRequest;
 import com.systemSchool.School.api.DTO.ClassDTO.ClassResponse;
 import com.systemSchool.School.api.DTO.StudentDTO.StudentRequest;
+import com.systemSchool.School.api.DTO.StudentDTO.StudentResponse;
 import com.systemSchool.School.api.Model.ClassAPI;
 import com.systemSchool.School.api.Service.ClassService;
+import com.systemSchool.School.api.Service.StudentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +20,12 @@ import java.util.Optional;
 public class ClassController {
 
     private ClassService classService;
+    private StudentService studentService;
 
     @Autowired
-    public ClassController(ClassService classService) {
+    public ClassController(ClassService classService, StudentService studentService) {
         this.classService = classService;
+        this.studentService = studentService;
     }
 
     @GetMapping("/class")
@@ -32,6 +36,17 @@ public class ClassController {
     public ResponseEntity<ClassResponse> getClassById(@PathVariable Long id) {
         ClassResponse classResponse = classService.getClassById(id);
         return ResponseEntity.ok().body(classResponse);
+    }
+
+    @GetMapping("/class/{className}")
+    public ResponseEntity<ClassResponse> getClassByName(@PathVariable String className) {
+        ClassResponse classResponse = classService.getClassByName(className);
+        if (classResponse != null) {
+            log.info("Class " + className + " found");
+            return ResponseEntity.ok().body(classResponse);
+        }
+        log.info("Class " + className + " not found");
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/class/post")
@@ -62,17 +77,26 @@ public class ClassController {
         return ResponseEntity.notFound().build();
     }
 
-
-    // Student
-
-    @PostMapping("/class/{id}/student/post")
-    public ResponseEntity<ClassResponse> postStudent(@PathVariable Long id, @RequestBody StudentRequest studentRequest) {
-        ClassResponse classResponse = classService.getClassById(id);
+    @PostMapping("/class/{classId}/student/")
+    public ResponseEntity<ClassResponse> addStudent(@PathVariable Long classId, @RequestBody List<StudentRequest> studentRequest) {
+        ClassResponse classResponse = classService.getClassById(classId);
         if (classResponse!=null) {
-            classService.addStudentIntoClass(id, studentRequest);
+            classService.addStudetIntoClass(classId, studentRequest);
             log.info("Student added", studentRequest);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(classResponse);
         }
+        log.error("Class " + classId + " not found");
+        return ResponseEntity.notFound().build();
+    }
+    @DeleteMapping("/class/{classId}/student/")
+    public ResponseEntity<ClassResponse> deleteStudent(@PathVariable Long classId, @RequestBody List<StudentRequest> studentRequest) {
+        ClassResponse classResponse = classService.getClassById(classId);
+        if (classResponse!=null) {
+            classService.removeStudentIntoClass(classId, studentRequest);
+            log.info("Student removed", studentRequest);
+            return ResponseEntity.ok().body(classResponse);
+        }
+        log.error("Class " + classId + " not found");
         return ResponseEntity.notFound().build();
     }
 

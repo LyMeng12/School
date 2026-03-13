@@ -35,6 +35,14 @@ public class StudentController {
     public ResponseEntity<List<StudentResponse>> getAllStudents() {
         return ResponseEntity.ok().body(studentService.getStudents());
     }
+    @GetMapping("/student/{name}")
+    public ResponseEntity<StudentResponse> getStudentByName(@PathVariable String name) {
+        StudentResponse studentResponse = studentService.getStudentByName(name);
+        if (studentResponse != null) {
+            return ResponseEntity.ok().body(studentResponse);
+        }
+        return ResponseEntity.notFound().build();
+    }
     @PutMapping("/student/{id}")
     public ResponseEntity<StudentRequest> updateStudent(@PathVariable Long id, @RequestBody StudentRequest studentRequest) {
         StudentResponse classresponse = studentService.getStudent(id);
