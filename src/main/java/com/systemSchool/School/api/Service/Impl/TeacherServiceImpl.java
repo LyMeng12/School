@@ -8,6 +8,7 @@ import com.systemSchool.School.api.DTO.TeacherDTO.TeacherRequest;
 import com.systemSchool.School.api.DTO.TeacherDTO.TeacherResponse;
 import com.systemSchool.School.api.Model.SubjectAPI;
 import com.systemSchool.School.api.Model.TeacherAPI;
+import com.systemSchool.School.api.Repository.SubjectRepository;
 import com.systemSchool.School.api.Repository.TeacherRepository;
 import com.systemSchool.School.api.Service.TeacherService;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +21,13 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class TeacherServiceImpl implements TeacherService {
-    private final TeacherRepository teacherRepository;
 
-    public TeacherServiceImpl(TeacherRepository teacherRepository) {
+    private final TeacherRepository teacherRepository;
+    private final SubjectRepository subjectRepository;
+
+    public TeacherServiceImpl(TeacherRepository teacherRepository, SubjectRepository subjectRepository) {
         this.teacherRepository = teacherRepository;
+        this.subjectRepository = subjectRepository;
     }
 
     @Override
@@ -72,23 +76,12 @@ public class TeacherServiceImpl implements TeacherService {
         teacherResponse.setClasses(
                 teacherAPI.get().getClasses().stream().map(classAPI -> {
                     ClassRequest classResponse = new ClassRequest();
+                    classResponse.setClassId(classAPI.getClassId());
                     classResponse.setClassName(classAPI.getClassName());
                     classResponse.setClassRoom(classAPI.getClassRoom());
                     return classResponse;
                 }).toList()
         );
-        teacherResponse.setStudents(
-               teacherAPI.get().getStudents().stream().map(studentAPI -> {
-                   StudentRequest studentResponse = new StudentRequest();
-                   studentResponse.setStudentName(studentAPI.getStudentName());
-                   studentResponse.setStudentGender(studentAPI.getGender());
-                   studentResponse.setStudentAge(studentAPI.getAge());
-                   return studentResponse;
-               }).toList()
-        );
-
-
-
         return teacherResponse;
     }
 
@@ -111,23 +104,42 @@ public class TeacherServiceImpl implements TeacherService {
             teacherResponse.setClasses(
                     teacherAPI1.getClasses().stream().map(classAPI -> {
                         ClassRequest classResponse = new ClassRequest();
+                        classResponse.setClassId(classAPI.getClassId());
                         classResponse.setClassName(classAPI.getClassName());
                         classResponse.setClassRoom(classAPI.getClassRoom());
                         return classResponse;
-                    }).toList()
-            );
-            teacherResponse.setStudents(
-                    teacherAPI1.getStudents().stream().map(studentAPI -> {
-                        StudentRequest studentResponse = new StudentRequest();
-                        studentResponse.setStudentName(studentAPI.getStudentName());
-                        studentResponse.setStudentGender(studentAPI.getGender());
-                        studentResponse.setStudentAge(studentAPI.getAge());
-                        return studentResponse;
                     }).toList()
             );
             teacherResponseList.add(teacherResponse);
         }
 
         return teacherResponseList;
+    }
+
+    @Override
+    public void AddSubjectToTeacher(Long TeacherId, SubjectRequest subjectRequest) {
+        Optional<TeacherAPI> teacherAPI = teacherRepository.findById(TeacherId);
+        if (teacherAPI.isEmpty()) {
+            log.error("Teacher not found",TeacherId);
+        }
+        Optional<SubjectAPI> subjectAPI = subjectRepository.findById(subjectRequest.getSubjectId());
+        SubjectAPI subjectAPI1 = subjectAPI.get();
+        subjectAPI1.setTeacher(teacherAPI.get());
+        subjectRepository.save(subjectAPI1);
+    }
+
+    @Override
+    public void RemoveSubjectFromTeacher(Long TeacherId, SubjectRequest subjectRequest) {
+        Optional<TeacherAPI> teacherAPI = teacherRepository.findById(TeacherId);
+        if (teacherAPI.isEmpty()) {
+            log.error("Teacher not found",TeacherId);
+        }
+        Optional<SubjectAPI> subjectAPI = subjectRepository.findById(subjectRequest.getSubjectId());
+        if (subjectAPI.isEmpty()) {
+            log.error("Subject not found",subjectRequest.getSubjectId());
+        }
+        SubjectAPI subjectAPI1 = subjectAPI.get();
+        subjectAPI1.setTeacher(null);
+        subjectRepository.save(subjectAPI1);
     }
 }

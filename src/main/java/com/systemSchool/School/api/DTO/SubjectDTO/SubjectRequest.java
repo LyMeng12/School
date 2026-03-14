@@ -9,6 +9,9 @@ import lombok.ToString;
 @Setter
 @ToString
 public class SubjectRequest {
+
+    @JsonProperty("SubjectId")
+    private Long SubjectId;
     @JsonProperty("SubjectName")
     private String SubjectName;
 }

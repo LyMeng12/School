@@ -1,5 +1,6 @@
 package com.systemSchool.School.api.DTO.TeacherDTO;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.systemSchool.School.api.DTO.ClassDTO.ClassRequest;
 import com.systemSchool.School.api.DTO.ClassDTO.ClassResponse;
@@ -13,6 +14,8 @@ import lombok.ToString;
 
 import java.util.List;
 
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY,
+        getterVisibility = JsonAutoDetect.Visibility.NONE)
 @Getter
 @Setter
 @ToString
@@ -27,6 +30,4 @@ public class TeacherResponse {
     private List<SubjectRequest> Subjects;
     @JsonProperty("ClassS")
     private List<ClassRequest> Classes;
-    @JsonProperty("Students")
-    private List<StudentRequest> Students;
 }

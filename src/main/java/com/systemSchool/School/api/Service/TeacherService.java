@@ -1,6 +1,7 @@
 package com.systemSchool.School.api.Service;
 
 
+import com.systemSchool.School.api.DTO.SubjectDTO.SubjectRequest;
 import com.systemSchool.School.api.DTO.TeacherDTO.TeacherRequest;
 import com.systemSchool.School.api.DTO.TeacherDTO.TeacherResponse;
 
@@ -12,4 +13,10 @@ public interface TeacherService {
     void deleteTeacher(Long Id);
     TeacherResponse getTeacherById(Long Id);
     List<TeacherResponse> getAllTeachers();
+
+    // Subject
+    void AddSubjectToTeacher(Long TeacherId, SubjectRequest subjectRequest);
+    void RemoveSubjectFromTeacher(Long TeacherId, SubjectRequest subjectRequest);
+
+
 }

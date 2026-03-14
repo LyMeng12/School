@@ -24,10 +24,5 @@ public class StudentAPI {
     @JsonBackReference
     private ClassAPI classAPI;
 
-    @ManyToOne
-    @JoinColumn(name = "teacher_id")
-    @JsonBackReference
-    private TeacherAPI TeacherAPI;
-
 
 }

@@ -30,6 +30,4 @@ public class StudentResponse {
     @JsonProperty("Class")
     private ClassRequest Classes;
 
-    @JsonProperty("Teachers")
-    private TeacherRequest Teachers;
 }

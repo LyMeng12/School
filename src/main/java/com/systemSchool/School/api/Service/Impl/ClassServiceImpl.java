@@ -87,7 +87,9 @@ public class ClassServiceImpl implements ClassService {
         classResponseDTO.setTeachers(
                 classResponse.get().getTeacherAPI().stream().map(teacherAPI ->{
                     TeacherRequest teacherResponseDTO = new TeacherRequest();
+                    teacherResponseDTO.setTeacherId(teacherAPI.getTeacherId());
                     teacherResponseDTO.setTeacherName(teacherAPI.getTeacherName());
+                    teacherResponseDTO.setSalary(teacherAPI.getSalary());
                     return teacherResponseDTO;
                 }).toList()
         );
@@ -119,6 +121,7 @@ public class ClassServiceImpl implements ClassService {
                     classAPI.getTeacherAPI().stream().map(teacherAPI -> {
 
                         TeacherRequest teacherResponseDTO = new TeacherRequest();
+                        teacherResponseDTO.setTeacherId(teacherAPI.getTeacherId());
                         teacherResponseDTO.setTeacherName(teacherAPI.getTeacherName());
                         teacherResponseDTO.setSalary(teacherAPI.getSalary());
                         return teacherResponseDTO;
@@ -157,6 +160,7 @@ public class ClassServiceImpl implements ClassService {
                 classResponse.get().getTeacherAPI().stream().map(teacherAPI -> {
 
                     TeacherRequest teacherResponseDTO = new TeacherRequest();
+                    teacherResponseDTO.setTeacherId(teacherAPI.getTeacherId());
                     teacherResponseDTO.setTeacherName(teacherAPI.getTeacherName());
                     teacherResponseDTO.setSalary(teacherAPI.getSalary());
                     return teacherResponseDTO;
@@ -262,22 +266,49 @@ public class ClassServiceImpl implements ClassService {
 
     @Override
     public ClassResponse addTeacherIntoClass(Long classId, List<TeacherRequest> teacherRequests) {
-        Optional<ClassAPI> classAPI = classRepository.findById(classId);
-        if(classAPI.isEmpty()) {
+        Optional<ClassAPI> classResponse = classRepository.findById(classId);
+        if(classResponse.isEmpty()) {
             log.error("Class not found",classId);
             return null;
         }
-        List<TeacherAPI> teacherList = teacherRequests.stream().map(
-                teacher -> {
-                    TeacherAPI teacherAPI = teacherRepository.findById(teacher.getTeacherId());
-                    if(teacher.getTeacherId()==null) {
-                        log.error("Teacher not found",teacher.getTeacherId());
-                        return null;
-                    }
-                    teacherAPI.setClasses(classAPI);
-                }
-        ).toList()
-        return null;
+        List<TeacherAPI> teacherAPIS = new ArrayList<>();
+        for(TeacherRequest teacherRequest : teacherRequests) {
+            Optional<TeacherAPI> teacherAPIOptional = teacherRepository.findById(teacherRequest.getTeacherId());
+            if(teacherAPIOptional.isEmpty()) {
+                log.error("Teacher not found",teacherRequest.getTeacherId());
+                return null;
+            }
+            TeacherAPI teacherAPI = new TeacherAPI();
+            teacherAPI.setTeacherId(teacherRequest.getTeacherId());
+            teacherAPI.setTeacherName(teacherRequest.getTeacherName());
+            teacherAPI.setSalary(teacherRequest.getSalary());
+            teacherAPIS.add(teacherAPI);
+        }
+        classResponse.get().setTeacherAPI(teacherAPIS);
+        classRepository.save(classResponse.get());
+        ClassResponse classResponseDTO = new ClassResponse();
+        classResponseDTO.setClassId(classResponse.get().getClassId());
+        classResponseDTO.setClassName(classResponse.get().getClassName());
+        classResponseDTO.setClassRoom(classResponse.get().getClassRoom());
+        classResponseDTO.setStudents(
+                classResponse.get().getStudentAPI().stream().map(studentAPI ->{
+                    StudentRequest studentResponseDTO = new StudentRequest();
+                    studentResponseDTO.setStudentId(studentAPI.getStudentId());
+                    studentResponseDTO.setStudentName(studentAPI.getStudentName());
+                    studentResponseDTO.setStudentGender(studentAPI.getGender());
+                    studentResponseDTO.setStudentAge(studentAPI.getAge());
+                    return studentResponseDTO;
+                }).toList()
+        );
+        //stream<List<ClassResponse>>
+        classResponseDTO.setTeachers(
+                classResponse.get().getTeacherAPI().stream().map(teacherAPI ->{
+                    TeacherRequest teacherResponseDTO = new TeacherRequest();
+                    teacherResponseDTO.setTeacherName(teacherAPI.getTeacherName());
+                    return teacherResponseDTO;
+                }).toList()
+        );
+        return classResponseDTO;
     }
 
     @Override

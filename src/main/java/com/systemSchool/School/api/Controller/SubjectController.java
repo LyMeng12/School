@@ -51,7 +51,7 @@ public class SubjectController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/subject/{id}")
+    @PutMapping("/subject/{id}/")
     public ResponseEntity<SubjectResponse> updateSubject(@PathVariable Long id, @RequestBody SubjectRequest subjectRequest) {
         SubjectResponse subject = subjectService.getSubject(id);
         if (subject != null) {

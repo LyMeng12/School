@@ -4,6 +4,7 @@ import com.systemSchool.School.api.DTO.ClassDTO.ClassRequest;
 import com.systemSchool.School.api.DTO.ClassDTO.ClassResponse;
 import com.systemSchool.School.api.DTO.StudentDTO.StudentRequest;
 import com.systemSchool.School.api.DTO.StudentDTO.StudentResponse;
+import com.systemSchool.School.api.DTO.TeacherDTO.TeacherRequest;
 import com.systemSchool.School.api.Model.ClassAPI;
 import com.systemSchool.School.api.Service.ClassService;
 import com.systemSchool.School.api.Service.StudentService;
@@ -77,6 +78,8 @@ public class ClassController {
         return ResponseEntity.notFound().build();
     }
 
+    // Students
+
     @PostMapping("/class/{classId}/student/")
     public ResponseEntity<ClassResponse> addStudent(@PathVariable Long classId, @RequestBody List<StudentRequest> studentRequest) {
         ClassResponse classResponse = classService.getClassById(classId);
@@ -94,6 +97,32 @@ public class ClassController {
         if (classResponse!=null) {
             classService.removeStudentIntoClass(classId, studentRequest);
             log.info("Student removed", studentRequest);
+            return ResponseEntity.ok().body(classResponse);
+        }
+        log.error("Class " + classId + " not found");
+        return ResponseEntity.notFound().build();
+    }
+
+    // Teachers
+
+    @PostMapping("/class/{classId}/teacher/")
+    public ResponseEntity<ClassResponse> addTeacherStudent(@PathVariable Long classId, @RequestBody List<TeacherRequest> teacherRequests) {
+        ClassResponse classResponse = classService.getClassById(classId);
+        if (classResponse!=null) {
+            classService.addTeacherIntoClass(classId,teacherRequests);
+            log.info("Teacher added", teacherRequests);
+            return ResponseEntity.ok().body(classResponse);
+        }
+        log.error("Class " + classId + " not found");
+        return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/class/{classId}/teacher")
+    public ResponseEntity<ClassResponse> deleteTeacherStudent(@PathVariable Long classId, @RequestBody List<TeacherRequest> teacherRequests) {
+        ClassResponse classResponse = classService.getClassById(classId);
+        if (classResponse!=null) {
+            classService.removeTeacherIntoClass(classId,teacherRequests);
+            log.info("Teacher removed", teacherRequests);
             return ResponseEntity.ok().body(classResponse);
         }
         log.error("Class " + classId + " not found");

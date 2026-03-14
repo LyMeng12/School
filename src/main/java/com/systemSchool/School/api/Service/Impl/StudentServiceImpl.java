@@ -82,16 +82,6 @@ public class StudentServiceImpl implements StudentService {
             studentResponse.setClasses(classResponse);
         }
 
-
-        TeacherAPI teacherAPI = studentAPI.get().getTeacherAPI();
-        if(teacherAPI == null) {
-            studentResponse.setTeachers(null);
-        }else {
-            TeacherRequest teacherResponse = new TeacherRequest();
-            teacherResponse.setTeacherName(teacherAPI.getTeacherName());
-            teacherResponse.setSalary(teacherAPI.getSalary());
-            studentResponse.setTeachers(teacherResponse);
-        }
         return studentResponse;
     }
 
@@ -116,15 +106,7 @@ public class StudentServiceImpl implements StudentService {
             classResponse.setClassRoom(classAPI.getClassRoom());
             studentResponse.setClasses(classResponse);
         }
-        TeacherAPI teacherAPI = student.get().getTeacherAPI();
-        if(teacherAPI == null) {
-            studentResponse.setTeachers(null);
-        }else {
-            TeacherRequest teacherResponse = new TeacherRequest();
-            teacherResponse.setTeacherId(teacherAPI.getTeacherId());
-            teacherResponse.setTeacherName(teacherAPI.getTeacherName());
-            studentResponse.setTeachers(teacherResponse);
-        }
+
         return studentResponse;
     }
 
@@ -149,18 +131,6 @@ public class StudentServiceImpl implements StudentService {
                 classResponse.setClassRoom(classAPI.getClassRoom());
                 studentResponse.setClasses(classResponse);
             }
-            TeacherAPI teacherAPI = studentAPI.getTeacherAPI();
-            if(teacherAPI == null) {
-                studentResponse.setTeachers(null);
-            }
-            else {
-                TeacherRequest teacherResponse = new TeacherRequest();
-                teacherResponse.setTeacherId(teacherAPI.getTeacherId());
-                teacherResponse.setTeacherName(teacherAPI.getTeacherName());
-                teacherResponse.setSalary(teacherAPI.getSalary());
-                studentResponse.setTeachers(teacherResponse);
-            }
-            studentResponseList.add(studentResponse);
         }
         return studentResponseList;
     }

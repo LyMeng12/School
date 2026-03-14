@@ -28,9 +28,6 @@ public class TeacherAPI {
 
     @ManyToMany(mappedBy = "teacherAPI")
     private List<ClassAPI> classes;
-    @OneToMany(mappedBy = "TeacherAPI",cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<StudentAPI> students;
 
 
 

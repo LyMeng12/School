@@ -17,10 +17,7 @@ public class SubjectAPI {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long subjectId;
-
     private String subjectName;
-
-
     @ManyToOne
     @JoinColumn(name = "teacher_id")
     private TeacherAPI teacher;
